@@ -1,0 +1,181 @@
+
+		body{
+			margin: 0;
+			position: relative;
+			height: 100vh;
+			background: #111;
+			overflow: hidden;
+			font-family: roboto,sans-serif;
+		}
+
+		#bar{
+		    position: absolute;
+		    bottom: 1%;
+		    background: #111;
+		    display: grid;
+		    grid-template-areas: 'input input input input input input search add';
+		    height: 7%;
+		    width: 98%;
+		    left: 1%;
+		    overflow: hidden;
+		    border-radius: 0.5vw;
+		}
+
+		#bar > button:hover {
+		    background: #fff;
+		    color: #000;
+		    cursor: pointer;
+		}
+
+		#bar > input{
+			grid-area:input;
+		}
+
+		#bar > button:nth-child(2){
+			grid-area:search;
+		}
+
+		#bar > button:nth-child(3){
+			grid-area:add;
+		}
+
+		#world{
+			width: 312vw;
+			height: 100vw;
+			overflow: hidden;
+		}
+
+		#world > div {
+		    width: 96vw;
+		    height: 100vw;
+		    float: left;
+		    padding: 2vw;
+		}
+
+
+
+		#world > div:nth-child(1){
+			background: #222;
+		}
+
+		#world > div:nth-child(2){
+			background: #444;
+		}
+
+		#world > div:nth-child(3) {
+		    background: #fff;
+		}
+
+		div#home_main > div{
+		    background: #222;
+		    color: #fff;
+		    font-family: sans-serif;
+		    font-size: 50px;
+		    cursor: pointer;
+		    transition: all 0.2s ease-in-out;
+		}
+
+		div#home_main > div:first-letter {
+		    font-size: 65px;
+		    text-transform: uppercase;
+		    font-weight: 700;
+		}
+
+		div#home_main > div:hover {
+		    transform: scale(0.8);
+		    background: #fff;
+		    color: #222;
+		}
+
+
+		div#home_main {
+		    grid-gap: 0.5vw;
+		    padding: 0.5vw;
+		    width: 100%;
+		}
+
+		#compose #title {
+		    background: transparent;
+		    border: none;
+		    font-size: 4vw;
+		    font-weight: 900;
+		    color: #262525;
+		    margin-bottom: 2vw;
+		}
+
+		section#contribute {
+		    padding-top: 3vw;
+		    color: #737373;
+		}
+
+		#bar > button {
+		    background: #333;
+		    border: none;
+		    color: #fff;
+		}
+
+		#loginUI input {
+		    width: 62%;
+		    margin-left: 18%;
+		    margin-top: 5%;
+		    height: 5vh;
+		    font-size: 2vw;
+		    text-align: center;
+		    color: #222;
+		    border: none;
+		    padding: 2vw 0;
+		    border-radius: 0.5vw;
+		    /* border-bottom: 0.5vw solid #fff; */
+		    /* background: transparent; */
+		}
+
+		div#loginUI {
+		    background: #000000d6;
+		    padding-top: 5vw;
+		}
+
+		.notifyUser{
+		    padding: 2vw;
+		    background: #222;
+		    box-shadow: 1px 1px 20px 1px #000;
+		    border-radius: 50vw;
+		    font-family: inherit;
+		    color: #fff;
+		}
+
+		#contribute textarea{
+		    width: 100vw;
+		    height: 25vh;
+		    font-family: inherit;
+		    padding: 1vw;
+		    font-size: 3vw;
+		    border: none;
+		    resize: none;
+		    background: #fff9;
+		    border-top: 0.5vw solid #999;
+		}
+
+		#contribute input {
+		    border: none;
+		    font-size: 4vw;
+		    border-radius: 50vw;
+		    height: 5vw;
+		    color: inherit;
+		    width: 4vw;
+		}
+
+		#compose h3 {
+		    color: #737373;
+		    font-size: 4vw;
+		    float: left;
+		    padding: 0;
+		    padding-top: 0px;
+		    padding-right: 0px;
+		    padding-bottom: 0px;
+		    padding-left: 0px;
+		    display: inline-block;
+		    margin: 0;
+		    margin-right: 0px;
+		    margin-right: 1vw;
+		}
+	

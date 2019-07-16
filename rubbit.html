@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>rubbit</title>
+	<link rel="stylesheet" type="text/css" href="./main.css">
+</head>
+<body>
+
+<template> <div onclick="boxClick(event)"></div> </template>
+
+<div id='world'>
+	<div class="page" id="home">
+		<div id="home_main"></div>
+	</div>
+	<div class="page" id="compose" open='openQuestion'>
+		<input type="text" id="title" name="title">
+		<div id="compose_box"></div>
+
+		<section id="contribute">
+			<h3>Contribute</h3><input type="text"  name="paragraphNumber"><br>
+			<textarea type="text" name="content" placeholder="Contribution" onKeyup="addParagraph(event)"></textarea> 
+		</section>
+	</div>
+</div>
+<div id="bar">
+	<input type="text" placeholder="Rubbit" id="bar_input" onkeydown="search()"> <button onclick="search()">></button> <button onclick="add()">+</button>
+</div>
+
+
+</body>
+
+<script src="./serverination.js"></script>
+<script class="private">
+	//remove this script tag after execution
+	//there should be a global way to add followers
+	//what if unique vale's default is not provided
+	//unique are required
+	//updating an array
+	//to do actions
+	//credentials as a file
+	//permanent test cookie for a particular app
+	//what happpends when a schema field is removed: trouble
+
+
+
+
+
+	// Date.now(), what if , how to access default values not available in put -> it is no it doesn't ccause we are passing nulls to the default
+
+	server.db['questions'] = {
+						schema:{
+							content:'String',
+							askedBy:{
+								type:'String',
+								default:'$user.id'
+							},
+							title:'unique',
+							editedBy:'Array',
+						},permission:{
+							update:{
+								$isBig: [{$getFollowerCount: { id: "$user.id" }}, {$getFollowerCount: { id: "$field.askedBy" }} ] 
+							},
+							write:null,
+							read:null
+						},action:null
+					}
+
+				
+					// {$write:{on:'questions',put:{content:'what should I ask?',askedBy:'$user.id'}  }}
+					// {$update:{on:'questions',where: {askedBy:'$user.id'},	put: {content:'what should I ask?',askedBy:'$user.id'}  }}
+					// {$read:{on:'questions',where: {content:'what should I ask?',askedBy:'$user.id'}  }}
+
+
+					//write default cant access the value that is not being provided
+	server.db['answers'] = {
+						schema: {
+							paragraphNumber:{
+								type:'Number',
+							},
+							title:'String',
+							content:'String',
+							writtenBy:{
+								type:'String',
+								default:'$user.id'
+							},
+							answersid:{
+								type:'unique',
+								default:{$add:['$put.title','$put.paragraphNumber']}
+							},
+							editedBy:'Array',
+						},
+						permission:{
+							update:{
+								$big_equal: [{$getFollowerCount: { id: "$user.id" }}, {$getFollowerCount: { id: "$field.writtenBy" }} ] 
+							},write:{
+								$big_equal: [{$getFollowerCount: { id: "$user.id" }}, {$getFollowerCount: { id: 
+
+									{$select:[
+										'askedBy',
+										{$read:{on:'answers',where: {title:'$put.title',paragraphNumber: {$add:['$put.paragraphNumber',1]}} }} 
+									]}
+
+								}} ] 
+							},read:null},
+						action:null
+					}				
+	//it will also be needed to be converted to a number
+				
+	//what if non function array exist
+
+	//use file as a user name and password
+
+	//decrese index on start
+
+	//{name:'rubbit',password:'Arnav@010'}
+	//parse file
+	//{'rubbit':'Arnav@010'}
+	server.start('rubbit','cred.json',{ mode:'testing' } )
+
+
+	// server.api({$write:{on:'questions',put:{content:'what should I ask?',askedBy:'$user.id'}  }},console.log)</script>
+
+
+<script type="text/javascript" src="./fly.js"></script>
+<script type="text/javascript" src="./tetrisGrid.js"></script>
+
+<script type="text/javascript">
+
+	setup('#world',1,false)
+
+	//conformation alert in the library
+
+	function addParagraph(event,type){
+
+		if (event.key !== 'Enter') return
+
+		var tmp = {}
+	  	var paragraphWorld = event.target.parentNode.parentNode
+	  	var value_array = paragraphWorld.querySelectorAll('input,textarea')
+
+
+	  	for(let index of value_array){
+	  		tmp[index.name] = index.value
+	  	}
+
+
+	  	if (!tmp.paragraphNumber) tmp.paragraphNumber = document.querySelectorAll('#compose p').length+1
+
+	  	console.log(tmp)
+
+		var query = {$write:{on:'answers',put:tmp }}
+
+		if (type) {
+			query = {$update:{on:'answers',put:{content:tmp.content},where:{answersid:tmp.title+tmp.paragraphNumber}  } }
+			console.log('updating..')
+		}
+
+	  	server.api(query, function(data){
+
+	  			//to do update
+
+	  			if (data.errmsg) {
+	  			
+	  				if(data.code === 11000) return addParagraph(event,'update')
+	  				
+	  			}
+
+	  		
+
+	  		console.log(data)
+
+	  		openStory(tmp.title)
+	  		server.notifyUser('making Contribution')
+	  	} )
+	}
+
+	//asked by default
+	function onAdd(da){
+		console.log(da)
+		if (da.errmsg){
+			server.notifyUser('Article already exist')
+			return
+		}
+		
+
+		openStory(da.title)
+	}
+
+
+
+	function boxClick(event){
+		console.log(event.target)
+
+		openStory(event.target.innerHTML)
+	}
+
+	function openStory(storyTitle){
+		//load 
+		server.api({$read:{on:'answers',where:{title: storyTitle}  }},function(data){
+			renderData(data,storyTitle)
+		})
+
+		if (!routing) return deck('#compose')
+		open('compose')
+	}
+
+	function renderData(read_data,storyTitle){
+		console.log(read_data)
+
+		document.getElementById('compose_box').innerHTML = ''
+		document.querySelectorAll('#compose input[name="paragraphNumber"]')[0].value = ''
+
+		var justText = ''
+
+		for(let index of read_data){
+			var newP = document.createElement('p')
+			newP.innerHTML = index.content
+			newP.addEventListener('click',function(){
+
+				document.querySelectorAll('#compose input[name="paragraphNumber"]')[0].value = index.paragraphNumber
+				
+			})
+
+			document.getElementById('compose_box').appendChild(newP)
+		}
+
+	
+		document.querySelector('#title').value = storyTitle
+	}
+
+
+	function add(){
+		console.log(document.getElementById('bar_input').value)
+		server.api({$write:{on:'questions',put:{title: document.getElementById('bar_input').value,content: document.getElementById('bar_input').value ,askedBy:'$user.id'}  }},onAdd)
+	}
+
+	function getInfo(){
+
+		function homeDataCallback(argument){
+
+			if (argument.error) return console.log(argument)
+
+			console.log(argument)
+
+			var sent = []
+
+			for(index of argument){
+				sent.push(index.content)
+			}
+
+			SetupCross(sent,document.getElementsByTagName("template")[0],'home_main',60)
+
+		}
+
+		//select everything -> ranking and stuff 
+
+		//limit
+		server.api( {$read:{on:'questions',where: {}  }} ,homeDataCallback )
+	}
+
+	function search(){
+	}
+
+	server.onStartUp(getInfo)
+
+</script>
+
+</html>
+
+<!-- tomorrow -> payment, search number of queries, query default value, cumber of read , media content -->
